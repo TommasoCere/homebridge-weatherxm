@@ -10,7 +10,6 @@ Plugin Homebridge per esporre i dati di una stazione WeatherXM come sensori Home
   - Pressione atmosferica
   - Velocità del vento (con log della direzione)
   - Radiazione solare
-- Risoluzione automatica di `stationName` → `stationId` (se non conosci l'ID)
 - Rate limiting configurabile per rispettare le chiamate API gratuite (es. 1000/mese)
 - Log su console e su file (`weatherxm.log`)
 - Configurazione tramite Homebridge UI (config.schema.json)
@@ -44,10 +43,8 @@ Esempio di configurazione:
       "platform": "WeatherXM",
       "name": "WeatherXM",
       "apiKey": "<LA_TUA_API_KEY>",
-      "stationId": "<ID_STAZIONE_OPZIONALE>",
-      "stationName": "<NOME_STAZIONE_OPZIONALE>",
+      "stationId": "<ID_STAZIONE>",
       "apiCallsPerMonth": 1000,
-      "minRefreshSeconds": 300,
       "logToFile": true,
       "debug": false
     }
@@ -57,9 +54,8 @@ Esempio di configurazione:
 
 Note:
 
-- Imposta almeno `apiKey`.
-- Puoi specificare `stationId` oppure solo `stationName` (verrà risolto automaticamente).
-- L'intervallo di aggiornamento è calcolato per rispettare il limite mensile (`apiCallsPerMonth`) e non scendere sotto `minRefreshSeconds`.
+- `apiKey` e `stationId` sono obbligatori.
+- L'intervallo di aggiornamento è calcolato esclusivamente sul limite mensile (`apiCallsPerMonth`).
 
 ## Sensori esposti
 

@@ -3,16 +3,14 @@ const axios = require('axios');
 class WeatherXMApiClient {
   /**
    * apiKey: string
-   * stationId: optional string
-   * stationName: optional string (used to resolve id)
+   * stationId: string (required)
    * logger: Logger instance
    * storagePath: path where to store small cache file (optional)
    */
-  constructor({ apiKey, stationId, stationName, logger, storagePath }) {
+  constructor({ apiKey, stationId, logger, storagePath }) {
     if (!apiKey) throw new Error('apiKey required');
     this.apiKey = apiKey;
     this.stationId = stationId || null;
-    this.stationName = stationName || null;
     this.logger = logger;
     this.base = 'https://api.weatherxm.com/api/v1';
     this.storagePath = storagePath || '.';
@@ -23,66 +21,7 @@ class WeatherXMApiClient {
     return { Authorization: `Bearer ${this.apiKey}` };
   }
 
-  async listStations() {
-    const url = `${this.base}/stations`;
-    this.logger.debug('Calling GET', url);
-    const resp = await axios.get(url, { headers: this._headers(), timeout: 10000 });
-    return resp.data;
-  }
-
-  async resolveStationIdByName(name) {
-    if (!name) throw new Error('stationName missing');
-    this.logger.info(`Resolving station id for name "${name}"`);
-    try {
-      const list = await this.listStations();
-      if (!Array.isArray(list)) {
-        this.logger.error('Unexpected /stations response', JSON.stringify(list));
-        throw new Error('Unexpected stations response');
-      }
-      const found = list.find(s => s.name && s.name.toLowerCase().trim() === name.toLowerCase().trim());
-      if (!found) {
-        // try partial match
-        const partial = list.find(s => s.name && s.name.toLowerCase().includes(name.toLowerCase().trim()));
-        if (partial) {
-          this.logger.warn(`Exact name not found, using partial match "${partial.name}" (${partial.id})`);
-          this._cacheStation(partial.id, partial.name);
-          return partial.id;
-        }
-        throw new Error(`Station "${name}" not found in your WeatherXM account`);
-      }
-      this._cacheStation(found.id, found.name);
-      return found.id;
-    } catch (e) {
-      this.logger.error('resolveStationIdByName error:', e.message);
-      // try cache
-      const cached = this._readCache();
-      if (cached && cached.name && cached.name.toLowerCase() === name.toLowerCase()) {
-        this.logger.warn('Using cached station id due to error');
-        return cached.id;
-      }
-      throw e;
-    }
-  }
-
-  _cacheStation(id, name) {
-    try {
-      const payload = { id, name, ts: Date.now() };
-      require('fs').writeFileSync(this.cacheFile, JSON.stringify(payload, null, 2));
-    } catch (e) {
-      // ignore
-    }
-  }
-
-  _readCache() {
-    try {
-      const fs = require('fs');
-      if (!fs.existsSync(this.cacheFile)) return null;
-      const raw = fs.readFileSync(this.cacheFile, 'utf8');
-      return JSON.parse(raw);
-    } catch (e) {
-      return null;
-    }
-  }
+  // Removed name-based resolution: stationId is required
 
   setStationId(id) {
     this.stationId = id;

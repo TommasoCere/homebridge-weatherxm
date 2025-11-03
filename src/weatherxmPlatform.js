@@ -17,7 +17,9 @@ class WeatherXMPlatform {
     this.platformName = 'WeatherXM';
     this.name = config.name || 'WeatherXM';
     this.config = config;
-    this.storagePath = (api && api.user && api.user.storagePath) ? api.user.storagePath : (process.env.HOMEBRIDGE_STORAGE || process.cwd());
+    this.storagePath = (api && api.user && typeof api.user.storagePath === 'function')
+      ? api.user.storagePath()
+      : (process.env.HOMEBRIDGE_STORAGE_PATH || process.cwd());
     this.logger = new Logger(this.storagePath, 'weatherxm', log, config.logToFile !== false, config.debug || false);
 
     if (!config.apiKey) {
@@ -28,13 +30,11 @@ class WeatherXMPlatform {
     this.client = new WeatherXMApiClient({
       apiKey: config.apiKey,
       stationId: config.stationId,
-      stationName: config.stationName,
       logger: this.logger,
       storagePath: this.storagePath
     });
 
-    this.apiCallsPerMonth = Number(config.apiCallsPerMonth || 1000);
-    this.minRefreshSeconds = Number(config.minRefreshSeconds || 300); // default 5 minutes
+  this.apiCallsPerMonth = Number(config.apiCallsPerMonth || 1000);
     this.accessories = []; // instances
 
     this.cachedData = null;
@@ -64,30 +64,15 @@ class WeatherXMPlatform {
     const secondsInMonth = daysInMonth * 24 * 3600;
     const calls = Math.max(1, this.apiCallsPerMonth);
     const intervalSeconds = Math.ceil(secondsInMonth / calls);
-    // ensure we never go below user minRefreshSeconds
-    this.refreshIntervalSeconds = Math.max(intervalSeconds, this.minRefreshSeconds);
-    this.logger.info(`API calls per month limit: ${calls}. Days in month: ${daysInMonth}. Computed interval: ${this.refreshIntervalSeconds}s`);
+    // Intervallo basato unicamente sul limite mensile
+    this.refreshIntervalSeconds = Math.max(1, intervalSeconds);
+    this.logger.info(`Limite mensile API: ${calls}. Giorni nel mese: ${daysInMonth}. Intervallo calcolato: ${this.refreshIntervalSeconds}s`);
   }
 
   async _init() {
-    // resolve station id if needed
-    if (!this.client.stationId && this.config.stationName) {
-      try {
-        const id = await this.client.resolveStationIdByName(this.config.stationName);
-        this.client.setStationId(id);
-        this.logger.info(`Resolved stationId ${id} from stationName "${this.config.stationName}"`);
-      } catch (e) {
-        this.logger.error('Could not resolve stationId by name:', e.message);
-      }
-    }
-
     if (!this.client.stationId) {
-      if (this.config.stationId) {
-        this.client.setStationId(this.config.stationId);
-      } else {
-        this.logger.error('No stationId available. Provide stationId or stationName.');
-        return;
-      }
+      this.logger.error('stationId mancante nella configurazione. Il plugin verrà disabilitato.');
+      return;
     }
 
     // create accessories

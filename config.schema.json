@@ -4,33 +4,22 @@
   "schema": {
     "title": "WeatherXM",
     "type": "object",
-    "required": ["apiKey"],
+    "required": ["apiKey", "stationId"],
     "properties": {
       "apiKey": {
         "title": "WeatherXM API Key",
         "type": "string"
       },
       "stationId": {
-        "title": "Station ID (opzionale)",
+        "title": "Station ID",
         "type": "string",
-        "description": "L'ID della stazione. Se omesso, verrà risolto automaticamente da stationName."
-      },
-      "stationName": {
-        "title": "Station Name (opzionale)",
-        "type": "string",
-        "description": "Nome della stazione come appare su WeatherXM. Utile se non conosci l'ID."
+        "description": "L'ID della stazione WeatherXM da monitorare (obbligatorio)."
       },
       "apiCallsPerMonth": {
         "title": "Numero massimo chiamate API al mese",
         "type": "number",
         "default": 1000,
-        "description": "Usa questo per limitare il numero di chiamate API (default 1000)."
-      },
-      "minRefreshSeconds": {
-        "title": "Intervallo minimo di refresh (secondi, opzionale)",
-        "type": "number",
-        "default": 300,
-        "description": "Intervallo minimo preferito per aggiornare i dati. Il sistema rispetterà il limite mensile e sceglierà l'intervallo maggiore fra questo e quello calcolato."
+        "description": "Limite mensile di chiamate API (default 1000). L'intervallo di aggiornamento verrà calcolato automaticamente."
       },
       "logToFile": {
         "title": "Abilita log su file",
