@@ -21,12 +21,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/OWNER/homebridge-weatherxm.git"
+    "url": "git+https://github.com/TommasoCere/homebridge-weatherxm.git"
   },
   "bugs": {
-    "url": "https://github.com/OWNER/homebridge-weatherxm/issues"
+    "url": "https://github.com/TommasoCere/homebridge-weatherxm/issues"
   },
-  "homepage": "https://github.com/OWNER/homebridge-weatherxm#readme",
+  "homepage": "https://github.com/TommasoCere/homebridge-weatherxm#readme",
   "files": [
     "index.js",
     "src/",
