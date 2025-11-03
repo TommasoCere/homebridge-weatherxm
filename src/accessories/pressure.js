@@ -6,12 +6,12 @@ class PressureAccessory {
     this.api = platform.api;
     const UUID = this.api.hap.uuid.generate(`weatherxm-pressure-${this.name}`);
     this.accessory = new this.platform.platformAccessoryClass(this.name, UUID);
-  // Use LightSensor to display numeric pressure avoiding Temperature 100°C limit
-  this.service = this.accessory.getService(this.api.hap.Service.LightSensor) || this.accessory.addService(this.api.hap.Service.LightSensor, this.name);
-  // Ambient Light Level must be >= 0.0001
-  this.service.setCharacteristic(this.api.hap.Characteristic.CurrentAmbientLightLevel, 0.0001);
+    // Use CarbonDioxideSensor to display a numeric value (ppm label in Home)
+    this.service = this.accessory.getService(this.api.hap.Service.CarbonDioxideSensor) || this.accessory.addService(this.api.hap.Service.CarbonDioxideSensor, this.name);
+    this.service.setCharacteristic(this.api.hap.Characteristic.CarbonDioxideDetected, this.api.hap.Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL);
+    this.service.setCharacteristic(this.api.hap.Characteristic.CarbonDioxideLevel, 0);
     this.platform.api.registerPlatformAccessories('homebridge-weatherxm', 'WeatherXM', [this.accessory]);
-    this.log.info('Pressure accessory created:', this.name);
+    this.log.info('Pressure accessory created:', this.name, '(displayed as CO2 level due to HomeKit limitations)');
   }
 
   updateData(data) {
@@ -20,10 +20,16 @@ class PressureAccessory {
       this.log.warn('Pressure null, skipping');
       return;
     }
-  // show hPa as numeric value in AmbientLight characteristic (UI workaround)
-  const clamped = Math.max(0.0001, p);
-  this.service.updateCharacteristic(this.api.hap.Characteristic.CurrentAmbientLightLevel, clamped);
-  this.log.info(`Pressure updated: ${p} hPa`);
+    // Map hPa to CarbonDioxideLevel (ppm) just for numeric display; include real unit in logs/name
+    const numeric = Math.max(0, p);
+    this.service.updateCharacteristic(this.api.hap.Characteristic.CarbonDioxideLevel, numeric);
+    // Optionally set detected if outside nominal range
+    const abnormal = (p < 980 || p > 1040);
+    this.service.updateCharacteristic(
+      this.api.hap.Characteristic.CarbonDioxideDetected,
+      abnormal ? this.api.hap.Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : this.api.hap.Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL
+    );
+    this.log.info(`Pressure updated: ${p} hPa${abnormal ? ' (out of nominal range)' : ''}`);
   }
 }
 

@@ -107,7 +107,9 @@ class WeatherXMPlatform {
     // rate-limit logic: check last fetch
     const now = Date.now();
     if (this.lastFetchTs && ((now - this.lastFetchTs) / 1000) < this.refreshIntervalSeconds) {
-      this.logger.debug('Skipping fetch to respect interval. Next allowed in', Math.round(this.refreshIntervalSeconds - ((now - this.lastFetchTs)/1000)), 's');
+      const remaining = Math.round(this.refreshIntervalSeconds - ((now - this.lastFetchTs)/1000));
+      const nextAt = new Date(this.lastFetchTs + this.refreshIntervalSeconds * 1000).toISOString();
+      this.logger.debug('Skipping fetch to respect interval. Next allowed in', remaining, 's (at', nextAt, ')');
       return;
     }
 
@@ -118,8 +120,10 @@ class WeatherXMPlatform {
         this.logger.warn('No data returned from API.');
         return;
       }
-      this.lastFetchTs = Date.now();
+  this.lastFetchTs = Date.now();
       this.cachedData = data;
+  const nextAt = new Date(this.lastFetchTs + this.refreshIntervalSeconds * 1000).toISOString();
+  this.logger.info('Next API fetch scheduled at', nextAt);
 
       // update accessories
       for (const acc of this.accessories) {

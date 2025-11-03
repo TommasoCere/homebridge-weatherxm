@@ -6,9 +6,10 @@ class WindAccessory {
     this.api = platform.api;
     const UUID = this.api.hap.uuid.generate(`weatherxm-wind-${this.name}`);
     this.accessory = new this.platform.platformAccessoryClass(this.name, UUID);
-    // use LightSensor to display numeric wind speed
-    this.service = this.accessory.getService(this.api.hap.Service.LightSensor) || this.accessory.addService(this.api.hap.Service.LightSensor, this.name);
-    this.service.setCharacteristic(this.api.hap.Characteristic.CurrentAmbientLightLevel, 0);
+    // Use MotionSensor for a distinct icon; triggers when wind exceeds a threshold
+    this.service = this.accessory.getService(this.api.hap.Service.MotionSensor) || this.accessory.addService(this.api.hap.Service.MotionSensor, this.name);
+    this.service.setCharacteristic(this.api.hap.Characteristic.MotionDetected, false);
+    this.threshold = 0.3; // m/s default threshold
     this.platform.api.registerPlatformAccessories('homebridge-weatherxm', 'WeatherXM', [this.accessory]);
     this.log.info('Wind accessory created:', this.name);
   }
@@ -20,14 +21,9 @@ class WindAccessory {
       this.log.warn('Wind speed null, skipping');
       return;
     }
-    // set wind speed (m/s or km/h depending on your API; leave raw)
-    try {
-      this.service.updateCharacteristic(this.api.hap.Characteristic.CurrentAmbientLightLevel, speed);
-    } catch (e) {
-      this.log.warn('Failed to update wind characteristic', e.message);
-    }
-    // log direction as info (HomeKit has no direct wind direction characteristic)
-    this.log.info(`Wind updated: ${speed} (direction ${dir}°)`);
+    const detected = speed >= this.threshold;
+    this.service.updateCharacteristic(this.api.hap.Characteristic.MotionDetected, detected);
+    this.log.info(`Wind updated: ${speed} m/s${dir != null ? `, direction ${dir}°` : ''} (threshold ${this.threshold} m/s)`);
   }
 }
 
