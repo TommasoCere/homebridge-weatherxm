@@ -17,8 +17,8 @@ Plugin Homebridge per esporre i dati di una stazione WeatherXM come sensori Home
 ## Requisiti
 
 - Node.js >= 18
-- Homebridge >= 1.6
-- Chiave API WeatherXM (token Bearer)
+- Homebridge >= 1.6 (compatibile anche con Homebridge v2)
+- Chiave API WeatherXM (header X-API-KEY)
 
 ## Installazione
 
