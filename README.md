@@ -1,4 +1,4 @@
-# homebridge-weatherxm
+# Homebridge WeatherXM
 
 Plugin Homebridge per esporre i dati di una stazione WeatherXM come sensori HomeKit separati.
 
