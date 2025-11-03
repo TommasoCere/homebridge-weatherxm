@@ -1,3 +1,4 @@
 module.exports = (api) => {
-  api.registerPlatform('homebridge-weatherxm', require('./src/weatherxmPlatform').WeatherXMPlatform);
+  // The first argument must match the "pluginAlias" in config.schema.json ("WeatherXM")
+  api.registerPlatform('WeatherXM', require('./src/weatherxmPlatform').WeatherXMPlatform);
 };
