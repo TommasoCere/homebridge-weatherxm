@@ -8,12 +8,16 @@
     "properties": {
       "apiKey": {
         "title": "WeatherXM API Key",
-        "type": "string"
+        "type": "string",
+        "description": "Crea una chiave su WeatherXM PRO: Settings → API Keys (https://pro.weatherxm.com). Inserisci il valore nell'header X-API-KEY.",
+        "placeholder": "wxm_...",
+        "password": true
       },
       "stationId": {
         "title": "Station ID",
         "type": "string",
-        "description": "L'ID della stazione WeatherXM da monitorare (obbligatorio)."
+        "description": "Trova l'ID su WeatherXM PRO: Stations → seleziona stazione → Details. È visibile anche nell'URL della pagina della stazione.",
+        "placeholder": "WXM-XXXX"
       },
       "apiCallsPerMonth": {
         "title": "Numero massimo chiamate API al mese",

@@ -5,11 +5,11 @@ Plugin Homebridge per esporre i dati di una stazione WeatherXM come sensori Home
 ## Caratteristiche
 
 - Espone sensori separati (li puoi posizionare in qualunque stanza):
-  - Temperatura attuale
-  - Precipitazione giornaliera (mm/day)
-  - Pressione atmosferica
-  - Velocità del vento (con log della direzione)
-  - Radiazione solare
+  - Temperatura attuale (Temperature Sensor)
+  - Pioggia: stato piove/non piove (Leak Sensor) con log di rate (mm/h) e accumulata (mm)
+  - Pressione atmosferica (mostrata come valore numerico su tile CO₂ per limiti HomeKit; unità reali nei log)
+  - Vento: rilevato sopra soglia (Motion Sensor) e direzione nei log
+  - Radiazione solare (Light Sensor)
 - Rate limiting configurabile per rispettare le chiamate API gratuite (es. 1000/mese)
 - Log su console e su file (`weatherxm.log`)
 - Configurazione tramite Homebridge UI (config.schema.json)
@@ -57,13 +57,28 @@ Note:
 - `apiKey` e `stationId` sono obbligatori.
 - L'intervallo di aggiornamento è calcolato esclusivamente sul limite mensile (`apiCallsPerMonth`).
 
+### Dove trovare API Key e Station ID (WeatherXM PRO)
+
+1. API Key
+
+- Vai su [pro.weatherxm.com](https://pro.weatherxm.com) ed effettua l'accesso con il tuo account.
+- Apri “Settings” → “API Keys”.
+- Crea una nuova chiave se non ne hai già una, quindi copia il valore e incollalo in Homebridge (campo “WeatherXM API Key”).
+- La chiave va inviata come header X-API-KEY (il plugin se ne occupa automaticamente).
+
+1. Station ID
+
+- Vai su “Stations”, seleziona la tua stazione.
+- Trovi l'ID nella pagina “Details” della stazione; è visibile anche nell'URL della pagina.
+- Copia l'ID e incollalo nel campo “Station ID” della configurazione in Homebridge.
+
 ## Sensori esposti
 
 - Temperature Sensor
-- Rain (precipitazione giornaliera)
-- Pressure Sensor
-- Wind (velocità; registra anche la direzione nei log)
-- Solar Radiation
+- Leak Sensor (pioggia: piove/non piove; log con rate/accumulo)
+- CarbonDioxide Sensor (mostra il valore numerico della pressione; unità reali nei log)
+- Motion Sensor (vento sopra soglia; direzione nei log)
+- Light Sensor (radiazione)
 
 ## Risoluzione problemi
 

@@ -50,6 +50,8 @@ class WeatherXMApiClient {
         // precipitation acc/ rate mapping
         precipitation: obs.precipitation_accumulated != null ? obs.precipitation_accumulated : (obs.precipitation != null ? obs.precipitation : null),
         precipitation_daily: obs.precipitation_accumulated != null ? obs.precipitation_accumulated : (obs.precipitation_daily != null ? obs.precipitation_daily : null),
+        precipitation_rate: obs.precipitation_rate != null ? obs.precipitation_rate : (obs.rain_rate != null ? obs.rain_rate : null),
+        precipitation_accumulated: obs.precipitation_accumulated != null ? obs.precipitation_accumulated : (obs.rain_accumulated != null ? obs.rain_accumulated : null),
         // solar / radiation
         solar_radiation: obs.solar_irradiance != null ? obs.solar_irradiance : (obs.solar_radiation != null ? obs.solar_radiation : null),
         radiation: obs.solar_irradiance != null ? obs.solar_irradiance : (obs.radiation != null ? obs.radiation : null),
