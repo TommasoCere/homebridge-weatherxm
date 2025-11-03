@@ -62,14 +62,14 @@ Note:
 1. API Key
 
 - Vai su [pro.weatherxm.com](https://pro.weatherxm.com) ed effettua l'accesso con il tuo account.
-- Apri “Settings” → “API Keys”.
+- Apri il menu laterale e vai su "API Management".
 - Crea una nuova chiave se non ne hai già una, quindi copia il valore e incollalo in Homebridge (campo “WeatherXM API Key”).
 - La chiave va inviata come header X-API-KEY (il plugin se ne occupa automaticamente).
 
 1. Station ID
 
-- Vai su “Stations”, seleziona la tua stazione.
-- Trovi l'ID nella pagina “Details” della stazione; è visibile anche nell'URL della pagina.
+- Apri il menu laterale e vai su "Map", quindi seleziona la tua stazione nella mappa.
+- Trovi l'ID cliccando su una stazione e scorrendo in "Station info" troverai "Station ID".
 - Copia l'ID e incollalo nel campo “Station ID” della configurazione in Homebridge.
 
 ## Sensori esposti
