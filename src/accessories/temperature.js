@@ -1,4 +1,3 @@
-const { v4: uuidv4 } = require('uuid');
 
 class TemperatureAccessory {
   constructor(platform, name) {
