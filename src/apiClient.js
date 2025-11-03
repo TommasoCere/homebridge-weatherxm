@@ -13,13 +13,13 @@ class WeatherXMApiClient {
     this.stationId = stationId || null;
     this.logger = logger;
     // Use the PRO endpoint as required by WeatherXM for station data
-    this.base = 'https://pro.weatherxm.com/api/v1';
+  this.base = 'https://pro.weatherxm.com/api/v1';
     this.storagePath = storagePath || '.';
     this.cacheFile = `${this.storagePath}/weatherxm_station_cache.json`;
   }
 
   _headers() {
-    return { Authorization: `Bearer ${this.apiKey}` };
+    return { 'X-API-KEY': this.apiKey, 'Accept': 'application/json' };
   }
 
   // Removed name-based resolution: stationId is required
