@@ -1,40 +1,40 @@
 # Homebridge WeatherXM
 
-Plugin Homebridge per esporre i dati di una stazione WeatherXM come sensori HomeKit separati.
+Homebridge plugin that exposes a WeatherXM station as separate HomeKit sensors.
 
-## Caratteristiche
+## Features
 
-- Espone sensori separati (li puoi posizionare in qualunque stanza):
-  - Temperatura attuale (Temperature Sensor)
-  - Pioggia: stato piove/non piove (Leak Sensor) con log di rate (mm/h) e accumulata (mm)
-  - Pressione atmosferica (mostrata come valore numerico su tile CO₂ per limiti HomeKit; unità reali nei log)
-  - Vento: rilevato sopra soglia (Motion Sensor) e direzione nei log
-  - Radiazione solare (Light Sensor)
-- Rate limiting configurabile per rispettare le chiamate API gratuite (es. 1000/mese)
-- Log su console e su file (`weatherxm.log`)
-- Configurazione tramite Homebridge UI (config.schema.json)
+- Exposes separate sensors (you can place them in any room):
+  - Current temperature (Temperature Sensor)
+  - Rain: raining/not raining (Leak Sensor) with logs for rate (mm/h) and accumulated (mm)
+  - Atmospheric pressure (displayed as a numeric value on a CO₂ tile due to HomeKit limitations; real units are logged)
+  - Wind: detected above threshold (Motion Sensor) with direction in logs
+  - Solar radiation (Light Sensor)
+- Configurable rate limiting to respect the free API quota (e.g., 1000/month)
+- Logs to console and file (`weatherxm.log`)
+- Configuration via Homebridge UI (`config.schema.json`)
 
-## Requisiti
+## Requirements
 
 - Node.js >= 18
-- Homebridge >= 1.6 (compatibile anche con Homebridge v2)
-- Chiave API WeatherXM (header X-API-KEY)
+- Homebridge >= 1.6 (also compatible with Homebridge v2)
+- WeatherXM API Key (X-API-KEY header)
 
-## Installazione
+## Installation
 
-Installazione globale (Homebridge):
+Global install (Homebridge):
 
 ```powershell
 npm install -g homebridge-weatherxm
 ```
 
-Oppure dalla Homebridge UI cercando "homebridge-weatherxm".
+Or install from the Homebridge UI by searching for "homebridge-weatherxm".
 
-## Configurazione
+## Configuration
 
-La configurazione può essere effettuata dalla Homebridge UI (schema incluso) oppure manualmente nel file `config.json`.
+You can configure the plugin from the Homebridge UI (schema included) or manually in `config.json`.
 
-Esempio di configurazione:
+Example configuration:
 
 ```json
 {
@@ -42,8 +42,8 @@ Esempio di configurazione:
     {
       "platform": "WeatherXM",
       "name": "WeatherXM",
-      "apiKey": "<LA_TUA_API_KEY>",
-      "stationId": "<ID_STAZIONE>",
+      "apiKey": "<YOUR_API_KEY>",
+      "stationId": "<STATION_ID>",
       "apiCallsPerMonth": 1000,
       "logToFile": true,
       "debug": false
@@ -52,40 +52,40 @@ Esempio di configurazione:
 }
 ```
 
-Note:
+Notes:
 
-- `apiKey` e `stationId` sono obbligatori.
-- L'intervallo di aggiornamento è calcolato esclusivamente sul limite mensile (`apiCallsPerMonth`).
+- `apiKey` and `stationId` are required.
+- The refresh interval is calculated only from the monthly cap (`apiCallsPerMonth`).
 
-### Dove trovare API Key e Station ID (WeatherXM PRO)
+### Where to find API Key and Station ID (WeatherXM PRO)
 
 1. API Key
 
-- Vai su [pro.weatherxm.com](https://pro.weatherxm.com) ed effettua l'accesso con il tuo account.
-- Apri il menu laterale e vai su "API Management".
-- Crea una nuova chiave se non ne hai già una, quindi copia il valore e incollalo in Homebridge (campo “WeatherXM API Key”).
-- La chiave va inviata come header X-API-KEY (il plugin se ne occupa automaticamente).
+- Go to [pro.weatherxm.com](https://pro.weatherxm.com) and sign in.
+- Open “Settings” → “API Keys”.
+- Create a new key if you don’t have one, then copy it and paste it in Homebridge (field “WeatherXM API Key”).
+- The key must be sent via the X-API-KEY header (the plugin handles this automatically).
 
 1. Station ID
 
-- Apri il menu laterale e vai su "Map", quindi seleziona la tua stazione nella mappa.
-- Trovi l'ID cliccando su una stazione e scorrendo in "Station info" troverai "Station ID".
-- Copia l'ID e incollalo nel campo “Station ID” della configurazione in Homebridge.
+- Go to “Stations” and select your station.
+- You’ll find the ID under the station “Details” page; it’s also visible in the station page URL.
+- Copy the ID and paste it in the “Station ID” field in Homebridge.
 
-## Sensori esposti
+## Exposed sensors
 
 - Temperature Sensor
-- Leak Sensor (pioggia: piove/non piove; log con rate/accumulo)
-- CarbonDioxide Sensor (mostra il valore numerico della pressione; unità reali nei log)
-- Motion Sensor (vento sopra soglia; direzione nei log)
-- Light Sensor (radiazione)
+- Leak Sensor (rain: raining/not raining; logs include rate/accumulation)
+- CarbonDioxide Sensor (shows the numeric pressure value; real units are logged)
+- Motion Sensor (wind above threshold; direction in logs)
+- Light Sensor (radiation)
 
-## Risoluzione problemi
+## Troubleshooting
 
-- Verifica che la chiave API sia corretta e abbia accesso alla stazione.
-- Abilita `debug: true` per log dettagliati.
-- Controlla `weatherxm.log` nella cartella di storage di Homebridge.
+- Make sure the API key is valid and has access to the station.
+- Enable `debug: true` for verbose logs.
+- Check `weatherxm.log` in your Homebridge storage folder.
 
-## Licenza
+## License
 
 MIT © 2025 Tommaso Ceredi
