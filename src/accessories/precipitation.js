@@ -6,27 +6,29 @@ class PrecipitationAccessory {
     this.api = platform.api;
     const UUID = this.api.hap.uuid.generate(`weatherxm-precip-${this.name}`);
     this.accessory = new this.platform.platformAccessoryClass(this.name, UUID);
-    // use HumiditySensor to show numeric mm value as workaround
-    this.service = this.accessory.getService(this.api.hap.Service.HumidifierDehumidifier) ||
-      this.accessory.addService(this.api.hap.Service.HumidifierDehumidifier, this.name);
-    // We'll map current relative humidity to precipitation mm by using a custom characteristic update in the "Active" field and CurrentRelativeHumidity as storage.
-    this.service.getCharacteristic(this.api.hap.Characteristic.CurrentRelativeHumidity)
-      .setProps({ minValue: -10000, maxValue: 100000 }); // allow wide range
-    this.service.setCharacteristic(this.api.hap.Characteristic.CurrentRelativeHumidity, 0);
+    // Use LeakSensor to represent rain presence with a suitable icon in Home app
+    this.service = this.accessory.getService(this.api.hap.Service.LeakSensor) ||
+      this.accessory.addService(this.api.hap.Service.LeakSensor, this.name);
+    this.service.setCharacteristic(this.api.hap.Characteristic.LeakDetected, this.api.hap.Characteristic.LeakDetected.LEAK_NOT_DETECTED);
     this.platform.api.registerPlatformAccessories('homebridge-weatherxm', 'WeatherXM', [this.accessory]);
     this.log.info('Precipitation accessory created:', this.name);
   }
 
   updateData(data) {
-    // data.precipitation_daily might be 'precipitation_daily' or similar
-    const val = (data && (data.precipitation_daily != null ? data.precipitation_daily : data.precipitation)) ? Number(data.precipitation_daily != null ? data.precipitation_daily : data.precipitation) : null;
-    if (val == null) {
-      this.log.warn('Precipitation null, skipping');
+    // Use precipitation_rate (mm/h) to decide if it's raining now
+    const rate = (data && data.precipitation_rate != null) ? Number(data.precipitation_rate) : null;
+    const accum = (data && data.precipitation_accumulated != null) ? Number(data.precipitation_accumulated) : null;
+    if (rate == null && accum == null) {
+      this.log.warn('Precipitation data null, skipping');
       return;
     }
-    // update the CurrentRelativeHumidity with mm value (workaround)
-    this.service.updateCharacteristic(this.api.hap.Characteristic.CurrentRelativeHumidity, val);
-    this.log.info(`Precipitation updated: ${val} mm (daily)`);
+    const raining = (rate != null ? rate > 0 : false);
+    this.service.updateCharacteristic(
+      this.api.hap.Characteristic.LeakDetected,
+      raining ? this.api.hap.Characteristic.LeakDetected.LEAK_DETECTED : this.api.hap.Characteristic.LeakDetected.LEAK_NOT_DETECTED
+    );
+    if (rate != null) this.log.info(`Precipitation rate: ${rate} mm/h${accum != null ? `, accumulated: ${accum} mm` : ''}`);
+    else if (accum != null) this.log.info(`Precipitation accumulated counter: ${accum} mm`);
   }
 }
 

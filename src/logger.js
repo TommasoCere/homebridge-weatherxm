@@ -8,6 +8,7 @@ class Logger {
     this.pluginName = pluginName || 'weatherxm';
     this.fileEnabled = !!enableFile;
     this.logPath = null;
+  this.maxBytes = 1024 * 1024; // 1 MB simple rotation
 
     if (this.fileEnabled) {
       try {
@@ -23,6 +24,15 @@ class Logger {
   _writeFile(line) {
     if (!this.fileEnabled || !this.logPath) return;
     try {
+      // simple size-based rotation
+      try {
+        const stat = fs.existsSync(this.logPath) ? fs.statSync(this.logPath) : null;
+        if (stat && stat.size > this.maxBytes) {
+          const rotated = this.logPath + '.1';
+          try { if (fs.existsSync(rotated)) fs.unlinkSync(rotated); } catch {}
+          try { fs.renameSync(this.logPath, rotated); } catch {}
+        }
+      } catch {}
       fs.appendFileSync(this.logPath, line + '\n');
     } catch (e) {
       // ignore file errors
