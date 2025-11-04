@@ -2,14 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.6] - 2025-11-04
+
+### Added — 2.1.6
+
+- Accessory Information (Manufacturer/Model/Serial/Firmware) set for all sensors to improve HAP compliance.
+
+### Docs — 2.1.6
+
+- README: clarify that sensors are bridged under the Homebridge bridge (don’t add them individually in the Home app).
+
 ## [2.1.5] - 2025-11-04
 
 ### Fixed — 2.1.5
 
 - HAP compliance: clamp sensor values to HomeKit ranges
-	- Temperature: [-273.15, 100] °C
-	- Ambient Light (radiation): [0.0001, 100000] lux
-	- CarbonDioxideLevel (pressure mapped): [0, 100000]
+  - Temperature: [-273.15, 100] °C
+  - Ambient Light (radiation): [0.0001, 100000] lux
+  - CarbonDioxideLevel (pressure mapped): [0, 100000]
 
 ### Docs — 2.1.5
 
@@ -107,6 +117,7 @@ All notable changes to this project will be documented in this file.
 
 
 [2.1.5]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.5
+[2.1.6]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.6
 [2.1.4]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.4
 [2.1.3]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.3
 [2.1.2]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.2
