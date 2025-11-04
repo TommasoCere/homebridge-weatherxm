@@ -10,7 +10,7 @@ class PressureAccessory {
     try {
       const pkg = require('../../package.json');
       const info = this.accessory.getService(this.api.hap.Service.AccessoryInformation);
-      info.setCharacteristic(this.api.hap.Characteristic.Manufacturer, 'Homebridge WeatherXM');
+      info.setCharacteristic(this.api.hap.Characteristic.Manufacturer, 'Homebridge TC WeatherXM');
       info.setCharacteristic(this.api.hap.Characteristic.Model, 'WeatherXM Sensor');
       info.setCharacteristic(this.api.hap.Characteristic.SerialNumber, `${this.platform.client.stationId || 'unknown'}-pressure`);
       info.setCharacteristic(this.api.hap.Characteristic.FirmwareRevision, pkg.version || '0.0.0');

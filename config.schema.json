@@ -6,32 +6,38 @@
     "type": "object",
     "required": ["apiKey", "stationId"],
     "properties": {
+      "name": {
+        "title": "Name",
+        "type": "string",
+        "default": "WeatherXM",
+        "description": "The display name for the platform as shown in the Homebridge UI."
+      },
       "apiKey": {
         "title": "WeatherXM API Key",
         "type": "string",
-        "description": "Crea una chiave su WeatherXM PRO: Settings → API Keys (https://pro.weatherxm.com). Inserisci il valore nell'header X-API-KEY.",
+        "description": "Create an API key on WeatherXM PRO: Settings → API Keys (https://pro.weatherxm.com). Paste it here. The plugin will send it in the X-API-KEY header.",
         "placeholder": "wxm_...",
         "password": true
       },
       "stationId": {
         "title": "Station ID",
         "type": "string",
-        "description": "Trova l'ID su WeatherXM PRO: Stations → seleziona stazione → Details. È visibile anche nell'URL della pagina della stazione.",
+        "description": "Find it on WeatherXM PRO: Stations → select your station → Details. It is also visible in the station page URL.",
         "placeholder": "WXM-XXXX"
       },
       "apiCallsPerMonth": {
-        "title": "Numero massimo chiamate API al mese",
+        "title": "Maximum API calls per month",
         "type": "number",
         "default": 1000,
-        "description": "Limite mensile di chiamate API (default 1000). L'intervallo di aggiornamento verrà calcolato automaticamente."
+        "description": "Monthly API call limit (default 1000). The refresh interval is automatically computed from this value."
       },
       "logToFile": {
-        "title": "Abilita log su file",
+        "title": "Enable file logging",
         "type": "boolean",
         "default": true
       },
       "debug": {
-        "title": "Modalità debug",
+        "title": "Debug mode",
         "type": "boolean",
         "default": false
       }

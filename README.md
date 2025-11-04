@@ -7,8 +7,9 @@ Homebridge plugin that exposes a WeatherXM station as separate HomeKit sensors.
 - Exposes separate sensors (you can place them in any room):
   - Current temperature (Temperature Sensor)
   - Rain: raining/not raining (Leak Sensor) with logs for rate (mm/h) and accumulated (mm)
-  - Atmospheric pressure (displayed as a numeric value on a CO₂ tile due to HomeKit limitations; real units are logged)
-  - Wind: detected above threshold (Motion Sensor) with direction in logs
+  - Atmospheric pressure (numeric on a CO₂ tile due to HomeKit limitations; real units are logged)
+  - Wind speed (numeric, mapped to Light Sensor — units shown as lux)
+  - Wind direction (numeric, mapped to Light Sensor — units shown as lux)
   - Solar radiation (Light Sensor)
 - Configurable rate limiting to respect the free API quota (e.g., 1000/month)
 - Logs to console and file (`weatherxm.log`)
@@ -55,7 +56,7 @@ Example configuration:
 Notes:
 
 - `apiKey` and `stationId` are required.
-- The refresh interval is calculated only from the monthly cap (`apiCallsPerMonth`).
+- The refresh interval is calculated pro‑rata on the remaining time of the current month from `apiCallsPerMonth` (e.g., if you start mid‑month, the plugin spreads the monthly cap over the remaining days).
 
 ### Where to find API Key and Station ID (WeatherXM PRO)
 
@@ -77,7 +78,8 @@ Notes:
 - Temperature Sensor
 - Leak Sensor (rain: raining/not raining; logs include rate/accumulation)
 - CarbonDioxide Sensor (shows the numeric pressure value; real units are logged)
-- Motion Sensor (wind above threshold; direction in logs)
+- Light Sensor (wind speed)
+- Light Sensor (wind direction)
 - Light Sensor (radiation)
 
 ## Troubleshooting
@@ -90,6 +92,18 @@ Notes:
 
 - Don’t add the WeatherXM sensors individually from the Home app. This plugin exposes bridged accessories under the Homebridge bridge. Pair the Homebridge bridge (QR code) — the sensors will show up automatically.
 - Ensure sensor values stay within HomeKit ranges (handled by the plugin since v2.1.5). If you still see issues, restart Homebridge and clear any cached duplicate accessories from the Homebridge UI.
+
+## Home app limitations and unit workaround
+
+Apple Home does not natively support many weather metrics (wind speed/direction, pressure, radiation) as dedicated services. To still show numbers in the Home app:
+
+- Pressure is mapped to a Carbon Dioxide sensor: the tile label shows “ppm”, but the value you see is the pressure (hPa). Logs always include the real unit.
+- Wind speed and wind direction are mapped to Ambient Light sensors: the tile label shows “lux”, but the values are respectively m/s and degrees.
+- Radiation is mapped to Ambient Light as well. For all Ambient Light values, HomeKit requires a minimum of 0.0001 and a maximum of 100000; the plugin clamps values accordingly.
+
+This design is intentional to surface numeric values in Home without requiring third‑party apps. If you prefer strictly correct units and charts, consider using an app that supports custom characteristics (e.g., Eve). In this plugin we prioritize visibility in Home and document the unit mismatch clearly.
+
+We hope Apple will add native support for these weather metrics in the future, allowing for proper units and services.
 
 ## License
 

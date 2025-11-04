@@ -6,7 +6,9 @@ const fs = require('fs');
 const TemperatureAccessory = require('./accessories/temperature').TemperatureAccessory;
 const PrecipitationAccessory = require('./accessories/precipitation').PrecipitationAccessory;
 const PressureAccessory = require('./accessories/pressure').PressureAccessory;
-const WindAccessory = require('./accessories/wind').WindAccessory;
+// Wind yes/no accessory removed by request; keep numeric ones only
+const WindSpeedAccessory = require('./accessories/windSpeed').WindSpeedAccessory;
+const WindDirectionAccessory = require('./accessories/windDirection').WindDirectionAccessory;
 const RadiationAccessory = require('./accessories/radiation').RadiationAccessory;
 
 class WeatherXMPlatform {
@@ -40,8 +42,8 @@ class WeatherXMPlatform {
     this.cachedData = null;
     this.lastFetchTs = 0;
 
-    // determine interval based on month days and allowed calls
-    this._computeInterval();
+  // determine interval based on remaining time in current month and allowed calls (pro‑rata)
+  this._computeInterval();
 
     // Homebridge API objects
     this.Service = api.hap.Service;
@@ -58,15 +60,21 @@ class WeatherXMPlatform {
   _computeInterval() {
     const now = new Date();
     const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    // days in month
-    const daysInMonth = new Date(year, month, 0).getDate();
-    const secondsInMonth = daysInMonth * 24 * 3600;
-    const calls = Math.max(1, this.apiCallsPerMonth);
-    const intervalSeconds = Math.ceil(secondsInMonth / calls);
-    // Intervallo basato unicamente sul limite mensile
+    const month = now.getMonth(); // 0-based
+    const startOfNextMonth = new Date(year, month + 1, 1, 0, 0, 0, 0);
+    const startOfThisMonth = new Date(year, month, 1, 0, 0, 0, 0);
+    const secondsInMonth = Math.floor((startOfNextMonth - startOfThisMonth) / 1000);
+    const remainingSeconds = Math.max(1, Math.floor((startOfNextMonth - now) / 1000));
+    const fractionRemaining = Math.min(1, Math.max(0, remainingSeconds / secondsInMonth));
+    const cap = Math.max(1, this.apiCallsPerMonth);
+    // pro‑rata: assumiamo che i token precedenti siano già stati usati
+    let allowableCalls = Math.floor(cap * fractionRemaining);
+    if (allowableCalls < 1) allowableCalls = 1; // garantisci almeno 1 chiamata nel mese rimanente
+    const intervalSeconds = Math.ceil(remainingSeconds / allowableCalls);
     this.refreshIntervalSeconds = Math.max(1, intervalSeconds);
-    this.logger.info(`Limite mensile API: ${calls}. Giorni nel mese: ${daysInMonth}. Intervallo calcolato: ${this.refreshIntervalSeconds}s`);
+    const remainingHours = Math.round(remainingSeconds / 3600);
+    this.logger.info(`Limite mensile API: ${cap}. Secondi nel mese: ${secondsInMonth}. Secondi rimanenti: ${remainingSeconds} (~${remainingHours}h).`
+      + ` Chiamate pro‑rata disponibili: ${allowableCalls}. Intervallo calcolato: ${this.refreshIntervalSeconds}s`);
   }
 
   async _init() {
@@ -93,11 +101,19 @@ class WeatherXMPlatform {
       this.temperature = new TemperatureAccessory(this, 'WeatherXM Temperature');
       this.precipitation = new PrecipitationAccessory(this, 'WeatherXM Precipitation');
       this.pressure = new PressureAccessory(this, 'WeatherXM Pressure');
-      this.wind = new WindAccessory(this, 'WeatherXM Wind');
+  this.windSpeed = new WindSpeedAccessory(this, 'WeatherXM Wind Speed');
+  this.windDirection = new WindDirectionAccessory(this, 'WeatherXM Wind Direction');
       this.radiation = new RadiationAccessory(this, 'WeatherXM Radiation');
 
       // store in list for update loops
-      this.accessories = [this.temperature, this.precipitation, this.pressure, this.wind, this.radiation];
+      this.accessories = [
+        this.temperature,
+        this.precipitation,
+        this.pressure,
+        this.windSpeed,
+        this.windDirection,
+        this.radiation
+      ];
     } catch (e) {
       this.logger.error('Error creating accessories: ' + e.message);
     }

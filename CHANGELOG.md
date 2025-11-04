@@ -2,15 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.7] - 2025-11-04
+
+### Changed — 2.1.7
+
+- Removed wind yes/no (MotionSensor) accessory; wind is now exposed only as numeric speed and direction.
+- Refresh interval respects monthly cap pro‑rata: when starting mid‑month, the plugin spreads the remaining allowance over the remaining time in the month (assumes earlier tokens are already spent). Minimum of 1 call preserved.
+
 ## [2.1.6] - 2025-11-04
 
 ### Added — 2.1.6
 
 - Accessory Information (Manufacturer/Model/Serial/Firmware) set for all sensors to improve HAP compliance.
+- Wind speed and wind direction exposed as numeric values using LightSensor services (values shown in Home; units label is lux due to HomeKit limitations).
 
 ### Docs — 2.1.6
 
 - README: clarify that sensors are bridged under the Homebridge bridge (don’t add them individually in the Home app).
+- README: document Home app limitations and the intentional unit mismatch used to display numbers (pressure on CO₂, wind on Light sensors).
 
 ## [2.1.5] - 2025-11-04
 
@@ -117,6 +126,7 @@ All notable changes to this project will be documented in this file.
 
 
 [2.1.5]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.5
+[2.1.7]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.7
 [2.1.6]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.6
 [2.1.4]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.4
 [2.1.3]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.3
