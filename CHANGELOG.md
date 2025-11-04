@@ -11,6 +11,10 @@ All notable changes to this project will be documented in this file.
 	- Ambient Light (radiation): [0.0001, 100000] lux
 	- CarbonDioxideLevel (pressure mapped): [0, 100000]
 
+### Docs — 2.1.5
+
+- Accessory Information (Manufacturer/Model/Serial/Firmware) added to all sensors to improve HAP compliance.
+
 ## [2.1.4] - 2025-11-04
 
 ### Fixed — 2.1.4

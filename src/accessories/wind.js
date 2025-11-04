@@ -6,6 +6,16 @@ class WindAccessory {
     this.api = platform.api;
     const UUID = this.api.hap.uuid.generate(`weatherxm-wind-${this.name}`);
     this.accessory = new this.platform.platformAccessoryClass(this.name, UUID);
+    // Accessory Information (HAP compliance)
+    try {
+      const pkg = require('../../package.json');
+      const info = this.accessory.getService(this.api.hap.Service.AccessoryInformation);
+      info.setCharacteristic(this.api.hap.Characteristic.Manufacturer, 'Homebridge WeatherXM');
+      info.setCharacteristic(this.api.hap.Characteristic.Model, 'WeatherXM Sensor');
+      info.setCharacteristic(this.api.hap.Characteristic.SerialNumber, `${this.platform.client.stationId || 'unknown'}-wind`);
+      info.setCharacteristic(this.api.hap.Characteristic.FirmwareRevision, pkg.version || '0.0.0');
+    } catch {}
+    this.accessory.category = this.api.hap.Categories.SENSOR;
     // Use MotionSensor for a distinct icon; triggers when wind exceeds a threshold
     this.service = this.accessory.getService(this.api.hap.Service.MotionSensor) || this.accessory.addService(this.api.hap.Service.MotionSensor, this.name);
     this.service.setCharacteristic(this.api.hap.Characteristic.MotionDetected, false);

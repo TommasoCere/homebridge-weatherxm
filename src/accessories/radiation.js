@@ -6,6 +6,16 @@ class RadiationAccessory {
     this.api = platform.api;
     const UUID = this.api.hap.uuid.generate(`weatherxm-radiation-${this.name}`);
     this.accessory = new this.platform.platformAccessoryClass(this.name, UUID);
+    // Accessory Information (HAP compliance)
+    try {
+      const pkg = require('../../package.json');
+      const info = this.accessory.getService(this.api.hap.Service.AccessoryInformation);
+      info.setCharacteristic(this.api.hap.Characteristic.Manufacturer, 'Homebridge WeatherXM');
+      info.setCharacteristic(this.api.hap.Characteristic.Model, 'WeatherXM Sensor');
+      info.setCharacteristic(this.api.hap.Characteristic.SerialNumber, `${this.platform.client.stationId || 'unknown'}-radiation`);
+      info.setCharacteristic(this.api.hap.Characteristic.FirmwareRevision, pkg.version || '0.0.0');
+    } catch {}
+    this.accessory.category = this.api.hap.Categories.SENSOR;
     // use LightSensor for solar radiation (lux-like value)
   this.service = this.accessory.getService(this.api.hap.Service.LightSensor) || this.accessory.addService(this.api.hap.Service.LightSensor, this.name);
   // HomeKit min for Ambient Light is 0.0001 lux

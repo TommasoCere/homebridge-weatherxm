@@ -6,6 +6,16 @@ class PrecipitationAccessory {
     this.api = platform.api;
     const UUID = this.api.hap.uuid.generate(`weatherxm-precip-${this.name}`);
     this.accessory = new this.platform.platformAccessoryClass(this.name, UUID);
+    // Accessory Information (HAP compliance)
+    try {
+      const pkg = require('../../package.json');
+      const info = this.accessory.getService(this.api.hap.Service.AccessoryInformation);
+      info.setCharacteristic(this.api.hap.Characteristic.Manufacturer, 'Homebridge WeatherXM');
+      info.setCharacteristic(this.api.hap.Characteristic.Model, 'WeatherXM Sensor');
+      info.setCharacteristic(this.api.hap.Characteristic.SerialNumber, `${this.platform.client.stationId || 'unknown'}-precipitation`);
+      info.setCharacteristic(this.api.hap.Characteristic.FirmwareRevision, pkg.version || '0.0.0');
+    } catch {}
+    this.accessory.category = this.api.hap.Categories.SENSOR;
     // Use LeakSensor to represent rain presence with a suitable icon in Home app
     this.service = this.accessory.getService(this.api.hap.Service.LeakSensor) ||
       this.accessory.addService(this.api.hap.Service.LeakSensor, this.name);

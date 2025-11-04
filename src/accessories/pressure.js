@@ -6,6 +6,16 @@ class PressureAccessory {
     this.api = platform.api;
     const UUID = this.api.hap.uuid.generate(`weatherxm-pressure-${this.name}`);
     this.accessory = new this.platform.platformAccessoryClass(this.name, UUID);
+    // Accessory Information (HAP compliance)
+    try {
+      const pkg = require('../../package.json');
+      const info = this.accessory.getService(this.api.hap.Service.AccessoryInformation);
+      info.setCharacteristic(this.api.hap.Characteristic.Manufacturer, 'Homebridge WeatherXM');
+      info.setCharacteristic(this.api.hap.Characteristic.Model, 'WeatherXM Sensor');
+      info.setCharacteristic(this.api.hap.Characteristic.SerialNumber, `${this.platform.client.stationId || 'unknown'}-pressure`);
+      info.setCharacteristic(this.api.hap.Characteristic.FirmwareRevision, pkg.version || '0.0.0');
+    } catch {}
+    this.accessory.category = this.api.hap.Categories.SENSOR;
     // Use CarbonDioxideSensor to display a numeric value (ppm label in Home)
     this.service = this.accessory.getService(this.api.hap.Service.CarbonDioxideSensor) || this.accessory.addService(this.api.hap.Service.CarbonDioxideSensor, this.name);
     this.service.setCharacteristic(this.api.hap.Characteristic.CarbonDioxideDetected, this.api.hap.Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL);

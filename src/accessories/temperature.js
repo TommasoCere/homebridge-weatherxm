@@ -7,6 +7,16 @@ class TemperatureAccessory {
     this.api = platform.api;
     const UUID = this.api.hap.uuid.generate(`weatherxm-temp-${this.name}`);
     this.accessory = new this.platform.platformAccessoryClass(this.name, UUID);
+    // Accessory Information (HAP compliance)
+    try {
+      const pkg = require('../../package.json');
+      const info = this.accessory.getService(this.api.hap.Service.AccessoryInformation);
+      info.setCharacteristic(this.api.hap.Characteristic.Manufacturer, 'Homebridge WeatherXM');
+      info.setCharacteristic(this.api.hap.Characteristic.Model, 'WeatherXM Sensor');
+      info.setCharacteristic(this.api.hap.Characteristic.SerialNumber, `${this.platform.client.stationId || 'unknown'}-temperature`);
+      info.setCharacteristic(this.api.hap.Characteristic.FirmwareRevision, pkg.version || '0.0.0');
+    } catch {}
+    this.accessory.category = this.api.hap.Categories.SENSOR;
     this.service = this.accessory.getService(this.api.hap.Service.TemperatureSensor) || this.accessory.addService(this.api.hap.Service.TemperatureSensor, this.name);
     // initial value (safe)
     this.service.setCharacteristic(this.api.hap.Characteristic.CurrentTemperature, 0);

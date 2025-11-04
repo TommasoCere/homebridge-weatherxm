@@ -62,15 +62,15 @@ Notes:
 1. API Key
 
 - Go to [pro.weatherxm.com](https://pro.weatherxm.com) and sign in.
-- Open “Settings” → “API Keys”.
-- Create a new key if you don’t have one, then copy it and paste it in Homebridge (field “WeatherXM API Key”).
+- Open the side menu and go to "API Management".
+- Create a new key if you don't already have one, then copy the value and paste it into Homebridge ("WeatherXM API Key" field).
 - The key must be sent via the X-API-KEY header (the plugin handles this automatically).
 
 1. Station ID
 
-- Go to “Stations” and select your station.
-- You’ll find the ID under the station “Details” page; it’s also visible in the station page URL.
-- Copy the ID and paste it in the “Station ID” field in Homebridge.
+- Open the side menu and go to "Map", then select your station on the map.
+- You can find the ID by clicking on a station and scrolling under "Station Info" to find "Station ID".
+- Copy the ID and paste it into the "Station ID" field in the Homebridge configuration.
 
 ## Exposed sensors
 
@@ -85,6 +85,11 @@ Notes:
 - Make sure the API key is valid and has access to the station.
 - Enable `debug: true` for verbose logs.
 - Check `weatherxm.log` in your Homebridge storage folder.
+
+### “Accessory out of compliance” in Apple Home
+
+- Don’t add the WeatherXM sensors individually from the Home app. This plugin exposes bridged accessories under the Homebridge bridge. Pair the Homebridge bridge (QR code) — the sensors will show up automatically.
+- Ensure sensor values stay within HomeKit ranges (handled by the plugin since v2.1.5). If you still see issues, restart Homebridge and clear any cached duplicate accessories from the Homebridge UI.
 
 ## License
 
