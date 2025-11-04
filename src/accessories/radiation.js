@@ -25,7 +25,8 @@ class RadiationAccessory {
       this.log.warn('Radiation null, skipping');
       return;
     }
-    const clamped = Math.max(0.0001, rad);
+  // HomeKit Ambient Light Level range: 0.0001..100000 lux
+  const clamped = Math.min(100000, Math.max(0.0001, rad));
     this.service.updateCharacteristic(this.api.hap.Characteristic.CurrentAmbientLightLevel, clamped);
     this.log.info(`Radiation updated: ${rad}`);
   }

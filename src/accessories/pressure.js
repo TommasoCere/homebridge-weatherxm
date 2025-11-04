@@ -21,7 +21,8 @@ class PressureAccessory {
       return;
     }
     // Map hPa to CarbonDioxideLevel (ppm) just for numeric display; include real unit in logs/name
-    const numeric = Math.max(0, p);
+  // HomeKit CarbonDioxideLevel typical safe range: 0..100000
+  const numeric = Math.max(0, Math.min(100000, p));
     this.service.updateCharacteristic(this.api.hap.Characteristic.CarbonDioxideLevel, numeric);
     // Optionally set detected if outside nominal range
     const abnormal = (p < 980 || p > 1040);

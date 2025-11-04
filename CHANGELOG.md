@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.5] - 2025-11-04
+
+### Fixed — 2.1.5
+
+- HAP compliance: clamp sensor values to HomeKit ranges
+	- Temperature: [-273.15, 100] °C
+	- Ambient Light (radiation): [0.0001, 100000] lux
+	- CarbonDioxideLevel (pressure mapped): [0, 100000]
+
 ## [2.1.4] - 2025-11-04
 
 ### Fixed — 2.1.4
@@ -93,6 +102,7 @@ All notable changes to this project will be documented in this file.
 - First release: temperature, precipitation, pressure, wind, radiation; UI configuration (`config.schema.json`); npm packaging.
 
 
+[2.1.5]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.5
 [2.1.4]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.4
 [2.1.3]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.3
 [2.1.2]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.2

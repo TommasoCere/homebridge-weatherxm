@@ -22,8 +22,11 @@ class TemperatureAccessory {
       this.log.warn('Temperature value null, skipping update');
       return;
     }
-    this.service.updateCharacteristic(this.api.hap.Characteristic.CurrentTemperature, t);
-    this.log.info(`Temperature updated: ${t} °C`);
+    // HomeKit range: -273.15 to 100
+    const clamped = Math.min(100, Math.max(-273.15, t));
+    if (clamped !== t) this.log.warn(`Temperature clamped to HomeKit range: ${t} -> ${clamped}`);
+    this.service.updateCharacteristic(this.api.hap.Characteristic.CurrentTemperature, clamped);
+    this.log.info(`Temperature updated: ${clamped} °C`);
   }
 }
 

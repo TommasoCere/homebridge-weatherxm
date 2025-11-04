@@ -1,6 +1,6 @@
 {
   "name": "homebridge-weatherxm",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "Homebridge plugin to expose WeatherXM station data as individual HomeKit sensors",
   "main": "index.js",
   "displayName": "Homebridge WeatherXM",
