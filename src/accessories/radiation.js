@@ -15,8 +15,13 @@ class RadiationAccessory {
   }
 
   updateData(data) {
-    const rad = (data && (data.solar_radiation != null ? data.solar_radiation : data.radiation)) ? Number(data.solar_radiation != null ? data.solar_radiation : data.radiation) : null;
-    if (rad == null) {
+    const raw = data
+      ? (data.solar_radiation != null
+        ? data.solar_radiation
+        : (data.radiation != null ? data.radiation : null))
+      : null;
+    const rad = raw != null ? Number(raw) : null;
+    if (rad == null || Number.isNaN(rad)) {
       this.log.warn('Radiation null, skipping');
       return;
     }

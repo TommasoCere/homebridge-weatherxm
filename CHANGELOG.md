@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.4] - 2025-11-04
+
+### Fixed — 2.1.4
+
+- Radiation: handle 0 as a valid value (avoid treating it as null). Use proper null checks and keep clamping to 0.0001 for HomeKit.
+
 ## [2.1.3] - 2025-11-04
 
 ### Docs — 2.1.3
@@ -87,6 +93,7 @@ All notable changes to this project will be documented in this file.
 - First release: temperature, precipitation, pressure, wind, radiation; UI configuration (`config.schema.json`); npm packaging.
 
 
+[2.1.4]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.4
 [2.1.3]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.3
 [2.1.2]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.2
 [2.1.1]: https://github.com/TommasoCere/homebridge-weatherxm/releases/tag/v2.1.1
